@@ -110,7 +110,7 @@ onMounted(() => {
             </div>
             <div class="user-meta">
               <span>ID: {{ user.id }}</span>
-              <span>Created: {{ new Date(user.createdAt!).toLocaleString() }}</span>
+              <span>Created: {{ new Date(user.createdAt).toLocaleString() }}</span>
             </div>
           </li>
         </ul>
