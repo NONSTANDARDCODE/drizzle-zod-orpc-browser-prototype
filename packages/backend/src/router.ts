@@ -1,8 +1,6 @@
 import { os } from '@orpc/server';
-import { insertUserSchema, selectUserSchema } from 'shared';
-import { users } from 'shared/src/schema.js';
+import { insertUserSchema, selectUserSchema, users } from 'shared';
 import { db } from './db.js';
-import { z } from 'zod';
 
 export const router = {
   createUser: os
