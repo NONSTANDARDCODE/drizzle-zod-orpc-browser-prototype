@@ -1,5 +1,5 @@
 import { os } from '@orpc/server';
-import { insertUserSchema, selectUserSchema, users } from 'shared';
+import { insertUserSchema, users } from 'shared';
 import { db } from './db.js';
 
 export const router = {

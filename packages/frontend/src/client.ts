@@ -1,6 +1,7 @@
 import { createORPCClient } from '@orpc/client';
 import { RPCLink } from '@orpc/client/fetch';
 import type { AppRouter } from '../../backend/src/router';
+import type { RouterClient } from '@orpc/server'
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -9,4 +10,4 @@ const link = new RPCLink({
   fetch: (input, init) => fetch(input, init),
 });
 
-export const client = createORPCClient<AppRouter>(link);
+export const client: RouterClient<AppRouter> = createORPCClient(link)
