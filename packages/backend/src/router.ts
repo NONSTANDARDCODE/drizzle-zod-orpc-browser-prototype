@@ -1,16 +1,19 @@
 import { os } from '@orpc/server';
-import { insertUserSchema, users } from 'shared';
+import { insertUserSchema, selectUserSchema, users } from 'shared';
+import { z } from 'zod';
 import { db } from './db.js';
 
 export const router = {
   createUser: os
     .input(insertUserSchema)
+    .output(selectUserSchema)
     .handler(async ({ input }) => {
       const [user] = await db.insert(users).values(input).returning();
       return user;
     }),
   
   getUsers: os
+    .output(z.array(selectUserSchema))
     .handler(async () => {
       const allUsers = await db.select().from(users);
       return allUsers;

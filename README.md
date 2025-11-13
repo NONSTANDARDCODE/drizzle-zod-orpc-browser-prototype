@@ -5,6 +5,7 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 - **Backend**: Node.js HTTP server with ORPC for RPC
 - **Database**: PostgreSQL with Drizzle ORM
 - **Schema Validation**: Drizzle-Zod for generating Zod schemas
+- **Contract**: ORPC contract for type-safe API communication
 - **Frontend**: Vue 3 with Composition API
 - **Type Safety**: Complete end-to-end type inference from database to UI
 
@@ -13,12 +14,26 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 ```
 .
 ├── packages/
-│   ├── shared/          # Shared schemas and types
-│   ├── backend/         # Node.js backend with ORPC
-│   └── frontend/        # Vue 3 frontend
+│   ├── shared/          # Shared schemas, types, and ORPC contract
+│   ├── backend/         # Node.js backend implementing the contract
+│   └── frontend/        # Vue 3 frontend using the contract
 ├── docker-compose.yml   # PostgreSQL database setup
 └── package.json         # Workspace configuration
 ```
+
+## Architecture
+
+This project uses a **contract-first** approach for API communication:
+
+1. **Shared Package**: Contains the database schema (Drizzle), validation schemas (Drizzle-Zod), and the ORPC contract that defines the API interface
+2. **Backend Package**: Implements the ORPC contract procedures with actual database operations
+3. **Frontend Package**: Uses the ORPC contract to make type-safe API calls without directly depending on the backend package
+
+This architecture ensures:
+- ✅ Frontend never imports from backend (no tight coupling)
+- ✅ Type safety across the entire stack
+- ✅ Contract serves as the single source of truth for the API
+- ✅ Frontend and backend can be developed independently
 
 ## Prerequisites
 
@@ -118,12 +133,14 @@ Navigate to http://localhost:5173 to see the application.
 
 ## Features
 
-- **Type-Safe API**: ORPC provides full type safety between frontend and backend
+- **Contract-First Architecture**: ORPC contract defines the API interface in a shared package
+- **Type-Safe API**: Full type safety from database to frontend without tight coupling
 - **Database Schema**: Drizzle ORM with type-safe queries
-- **Validation**: Zod schemas generated from Drizzle schemas
-- **Monorepo**: Shared types package for consistency
+- **Validation**: Zod schemas generated from Drizzle schemas for input validation
+- **Monorepo**: Shared package containing schemas and contract
 - **Auto-Migration**: Drizzle migrations for database schema
 - **Environment Variables**: Configurable connection strings and ports
+- **Decoupled Frontend**: Frontend uses contract without importing backend code
 
 ## API Endpoints
 
@@ -182,12 +199,14 @@ When you modify the database schema in `packages/shared/src/schema.ts`:
 
 ### Type Safety
 
-The application maintains end-to-end type safety:
+The application maintains end-to-end type safety through a contract-first approach:
 
-1. Database schema defined in Drizzle (`shared/src/schema.ts`)
-2. Zod schemas generated from Drizzle schemas (`shared/src/schemas.ts`)
-3. ORPC router uses Zod schemas for validation (`backend/src/router.ts`)
-4. Frontend imports types from shared package and gets full autocomplete
+1. **Database Schema**: Defined in Drizzle (`shared/src/schema.ts`)
+2. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`shared/src/schemas.ts`)
+3. **API Contract**: ORPC contract defines input/output types (`shared/src/contract.ts`)
+4. **Backend Implementation**: Implements the contract with type-safe handlers (`backend/src/router.ts`)
+5. **Frontend Client**: Uses the contract for type-safe API calls (`frontend/src/client.ts`)
+6. **Full Autocomplete**: Frontend gets complete type inference without importing backend code
 
 ## Troubleshooting
 
