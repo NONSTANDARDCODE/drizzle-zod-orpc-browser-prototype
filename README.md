@@ -40,6 +40,11 @@ This architecture ensures:
 - Node.js 18+ and npm
 - Docker and Docker Compose
 
+# full setup
+```
+npm install & cp packages/backend/.env.example packages/backend/.env & cp packages/frontend/.env.example packages/frontend/.env && npm run build --workspace=shared & npm run --workspace=backend db:generate && npm run dev
+```
+
 ## Getting Started
 
 ### 1. Install dependencies
