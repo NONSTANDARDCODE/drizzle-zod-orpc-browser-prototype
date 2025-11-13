@@ -9,6 +9,7 @@ export const contract = {
     .output(selectUserSchema),
   
   getUsers: oc
+    .input(z.void())
     .output(z.array(selectUserSchema)),
 };
 
