@@ -1,7 +1,8 @@
 import { os } from '@orpc/server';
-import { insertUserSchema, selectUserSchema, users } from 'shared';
+import { users } from 'shared';
 import { z } from 'zod';
 import { db } from './db.js';
+import { insertUserSchema, selectUserSchema } from './model/schemas.js';
 
 export const router = {
   createUser: os
@@ -21,3 +22,7 @@ export const router = {
 };
 
 export type AppRouter = typeof router;
+
+// Re-export types for frontend
+export type { InsertUser, SelectUser } from './model/schemas.js';
+

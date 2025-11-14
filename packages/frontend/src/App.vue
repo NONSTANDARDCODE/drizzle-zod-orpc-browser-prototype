@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { client } from './client';
-import type { SelectUser } from 'shared';
+import type { SelectUser } from 'backend';
 
 const users = ref<SelectUser[]>([]);
 const name = ref('');
