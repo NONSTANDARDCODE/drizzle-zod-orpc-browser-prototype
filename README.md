@@ -5,35 +5,38 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 - **Backend**: Node.js HTTP server with ORPC for RPC
 - **Database**: PostgreSQL with Drizzle ORM
 - **Schema Validation**: Drizzle-Zod for generating Zod schemas
-- **Contract**: ORPC contract for type-safe API communication
+- **Type Safety**: Direct router import for type-safe API communication
 - **Frontend**: Vue 3 with Composition API
-- **Type Safety**: Complete end-to-end type inference from database to UI
+- **Type Inference**: Complete end-to-end type inference from database to UI
 
 ## Project Structure
 
 ```
 .
 ├── packages/
-│   ├── shared/          # Shared schemas, types, and ORPC contract
-│   ├── backend/         # Node.js backend implementing the contract
-│   └── frontend/        # Vue 3 frontend using the contract
+│   ├── shared/          # Shared database schema (Drizzle)
+│   ├── backend/         # Node.js backend with ORPC router
+│   └── frontend/        # Vue 3 frontend consuming backend router types
 ├── docker-compose.yml   # PostgreSQL database setup
 └── package.json         # Workspace configuration
 ```
 
 ## Architecture
 
-This project uses a **contract-first** approach for API communication:
+This project follows the **ORPC monorepo best practices** with direct router imports:
 
-1. **Shared Package**: Contains the database schema (Drizzle), validation schemas (Drizzle-Zod), and the ORPC contract that defines the API interface
-2. **Backend Package**: Implements the ORPC contract procedures with actual database operations
-3. **Frontend Package**: Uses the ORPC contract to make type-safe API calls without directly depending on the backend package
+1. **Shared Package**: Contains only the database schema (Drizzle) - minimal and reusable
+2. **Backend Package**: Exports the ORPC router with validation schemas (Drizzle-Zod) and type definitions
+3. **Frontend Package**: Imports router types directly from backend for type-safe API calls
 
 This architecture ensures:
-- ✅ Frontend never imports from backend (no tight coupling)
-- ✅ Type safety across the entire stack
-- ✅ Contract serves as the single source of truth for the API
-- ✅ Frontend and backend can be developed independently
+- ✅ Type safety across the entire stack through direct type inference
+- ✅ Simpler architecture without a separate contract layer
+- ✅ Better developer experience with automatic type updates
+- ✅ Follows ORPC recommended monorepo setup
+- ✅ Browser-compatible with drizzle-zod schemas
+
+> **Note**: See [TECHNICAL_ANALYSIS.md](./TECHNICAL_ANALYSIS.md) for a detailed comparison of contract-based vs direct import approaches.
 
 ## Prerequisites
 
@@ -42,7 +45,7 @@ This architecture ensures:
 
 # full setup
 ```
-npm install & cp packages/backend/.env.example packages/backend/.env & cp packages/frontend/.env.example packages/frontend/.env && npm run build --workspace=shared & npm run --workspace=backend db:generate && npm run dev
+npm install && cp packages/backend/.env.example packages/backend/.env && cp packages/frontend/.env.example packages/frontend/.env && npm run build --workspace=shared && npm run build --workspace=backend && npm run --workspace=backend db:generate && npm run dev
 ```
 
 ## Getting Started
@@ -80,10 +83,11 @@ cp .env.example .env
 The `.env` file contains:
 - `VITE_API_URL`: Backend API URL (default: `http://localhost:3000`)
 
-### 3. Build shared package
+### 3. Build shared and backend packages
 
 ```bash
 npm run build --workspace=shared
+npm run build --workspace=backend
 ```
 
 ### 4. Generate database migration
@@ -138,14 +142,14 @@ Navigate to http://localhost:5173 to see the application.
 
 ## Features
 
-- **Contract-First Architecture**: ORPC contract defines the API interface in a shared package
-- **Type-Safe API**: Full type safety from database to frontend without tight coupling
+- **Direct Router Import**: Frontend imports router types directly from backend (ORPC best practice)
+- **Type-Safe API**: Full type safety from database to frontend with automatic type inference
 - **Database Schema**: Drizzle ORM with type-safe queries
 - **Validation**: Zod schemas generated from Drizzle schemas for input validation
-- **Monorepo**: Shared package containing schemas and contract
+- **Monorepo**: Shared package containing database schema, backend with router and schemas
 - **Auto-Migration**: Drizzle migrations for database schema
 - **Environment Variables**: Configurable connection strings and ports
-- **Decoupled Frontend**: Frontend uses contract without importing backend code
+- **Browser Compatible**: Drizzle-Zod schemas work perfectly in browser environments
 
 ## API Endpoints
 
@@ -204,14 +208,14 @@ When you modify the database schema in `packages/shared/src/schema.ts`:
 
 ### Type Safety
 
-The application maintains end-to-end type safety through a contract-first approach:
+The application maintains end-to-end type safety through direct router imports:
 
-1. **Database Schema**: Defined in Drizzle (`shared/src/schema.ts`)
-2. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`shared/src/schemas.ts`)
-3. **API Contract**: ORPC contract defines input/output types (`shared/src/contract.ts`)
-4. **Backend Implementation**: Implements the contract with type-safe handlers (`backend/src/router.ts`)
-5. **Frontend Client**: Uses the contract for type-safe API calls (`frontend/src/client.ts`)
-6. **Full Autocomplete**: Frontend gets complete type inference without importing backend code
+1. **Database Schema**: Defined in Drizzle (`shared/src/drizzle/schema.ts`)
+2. **Backend Router**: Exports ORPC router with Zod schemas from Drizzle (`backend/src/router.ts`)
+3. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`backend/src/model/schemas.ts`)
+4. **Frontend Client**: Imports router types directly from backend (`frontend/src/client.ts`)
+5. **Type Inference**: Frontend gets complete type inference and autocomplete from backend router
+6. **Automatic Updates**: Changes in backend router automatically reflect in frontend types
 
 ## Troubleshooting
 
@@ -231,7 +235,8 @@ If port 3000 or 5173 is already in use:
 
 ### TypeScript errors in frontend
 
-Ensure the shared package is built:
+Ensure both shared and backend packages are built:
 ```bash
 npm run build --workspace=shared
+npm run build --workspace=backend
 ```
