@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { users } from '../drizzle/schema.js';
+import { users } from '@/drizzle/schema.js';
 
 export const insertUserSchema = createInsertSchema(users, {
   name: (schema) => schema.name.min(1, 'Name is required'),

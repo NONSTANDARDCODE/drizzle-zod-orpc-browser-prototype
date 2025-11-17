@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import { RPCHandler } from '@orpc/server/node';
-import { router } from './router.js';
+import { router } from '@/router.js';
 
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
