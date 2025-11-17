@@ -9,6 +9,10 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
+    "./model": {
+      "types": "./dist/model/schemas.d.ts",
+      "default": "./dist/model/schemas.js"
+    },
     "./drizzle": {
       "types": "./dist/drizzle/schema.d.ts",
       "default": "./dist/drizzle/schema.js"

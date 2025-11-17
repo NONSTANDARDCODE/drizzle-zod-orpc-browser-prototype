@@ -11,8 +11,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsup src/index.ts --format esm --dts --external @orpc/contract --external zod",
+    "dev": "tsup src/index.ts --format esm --dts --external @orpc/contract --external zod --watch"
   },
   "dependencies": {
     "@orpc/contract": "^1.11.2",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
+    "tsup": "^8.5.1",
     "typescript": "^5.5.3"
   }
 }
