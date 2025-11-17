@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@orpc/contract": "^1.11.2",
-    "backend": "*",
+    "backend": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

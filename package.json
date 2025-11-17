@@ -2,17 +2,14 @@
   "name": "drizzle-zod-orpc-browser-prototype",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "dev": "npm run db:up && npm run db:migrate && concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:backend": "npm run dev --workspace=backend",
-    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev": "pnpm run db:up && pnpm run db:migrate && concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend dev",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
-    "db:migrate": "npm run db:migrate --workspace=backend",
-    "build": "npm run build --workspaces",
+    "db:migrate": "pnpm --filter backend db:migrate",
+    "build": "pnpm -r build",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist"
   },
   "devDependencies": {

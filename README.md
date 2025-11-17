@@ -39,12 +39,12 @@ This architecture ensures:
 
 ## Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 18+ and pnpm
 - Docker and Docker Compose
 
 # full setup
 ```
-npm install & cp packages/backend/.env.example packages/backend/.env & cp packages/frontend/.env.example packages/frontend/.env && npm run build --workspace=shared & npm run --workspace=backend db:generate && npm run dev
+pnpm install & cp packages/backend/.env.example packages/backend/.env & cp packages/frontend/.env.example packages/frontend/.env && pnpm run --filter shared build & pnpm run --filter backend db:generate && pnpm run dev
 ```
 
 ## Getting Started
@@ -52,7 +52,7 @@ npm install & cp packages/backend/.env.example packages/backend/.env & cp packag
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Set up environment variables
@@ -85,14 +85,14 @@ The `.env` file contains:
 ### 3. Build shared package
 
 ```bash
-npm run build --workspace=shared
+pnpm run --filter shared build
 ```
 
 ### 4. Generate database migration
 
 ```bash
 cd packages/backend
-npm run db:generate
+pnpm run db:generate
 cd ../..
 ```
 
@@ -101,7 +101,7 @@ cd ../..
 #### Option A: Start everything at once (Recommended)
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 This will:
@@ -116,22 +116,22 @@ If you prefer more control, start each service separately:
 
 **Terminal 1 - Database:**
 ```bash
-npm run db:up
+pnpm run db:up
 ```
 
 **Terminal 2 - Run migrations (once database is ready):**
 ```bash
-npm run db:migrate
+pnpm run db:migrate
 ```
 
 **Terminal 3 - Backend:**
 ```bash
-npm run dev:backend
+pnpm run dev:backend
 ```
 
 **Terminal 4 - Frontend:**
 ```bash
-npm run dev:frontend
+pnpm run dev:frontend
 ```
 
 ### 6. Open your browser
@@ -163,14 +163,14 @@ The backend exposes the following ORPC procedures:
 
 ## Available Scripts
 
-- `npm run dev` - Start full stack (database, backend, frontend)
-- `npm run dev:backend` - Start backend only
-- `npm run dev:frontend` - Start frontend only
-- `npm run db:up` - Start PostgreSQL
-- `npm run db:down` - Stop PostgreSQL
-- `npm run db:migrate` - Run database migrations
-- `npm run build` - Build all packages
-- `npm run clean` - Clean all node_modules and dist folders
+- `pnpm run dev` - Start full stack (database, backend, frontend)
+- `pnpm run dev:backend` - Start backend only
+- `pnpm run dev:frontend` - Start frontend only
+- `pnpm run db:up` - Start PostgreSQL
+- `pnpm run db:down` - Stop PostgreSQL
+- `pnpm run db:migrate` - Run database migrations
+- `pnpm run build` - Build all packages
+- `pnpm run clean` - Clean all node_modules and dist folders
 
 ## Environment Variables Reference
 
@@ -196,12 +196,12 @@ When you modify the database schema in `packages/backend/src/drizzle/schema.ts`:
 1. Generate a new migration:
    ```bash
    cd packages/backend
-   npm run db:generate
+   pnpm run db:generate
    ```
 
 2. Apply the migration:
    ```bash
-   npm run db:migrate
+   pnpm run db:migrate
    ```
 
 ### Type Safety
@@ -235,5 +235,5 @@ If port 3000 or 5173 is already in use:
 
 Ensure the shared package is built:
 ```bash
-npm run build --workspace=shared
+pnpm run --filter shared build
 ```
