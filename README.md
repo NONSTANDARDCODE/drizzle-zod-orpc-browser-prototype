@@ -14,8 +14,8 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 ```
 .
 ├── packages/
-│   ├── shared/          # Shared schemas, types, and ORPC contract
-│   ├── backend/         # Node.js backend implementing the contract
+│   ├── backend/         # Database schema, models, and ORPC router implementation
+│   ├── shared/          # ORPC contract (imports models from backend)
 │   └── frontend/        # Vue 3 frontend using the contract
 ├── docker-compose.yml   # PostgreSQL database setup
 └── package.json         # Workspace configuration
@@ -23,26 +23,28 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 
 ## Architecture
 
-This project uses a **contract-first** approach for API communication:
+This project uses a **contract-first** approach with **cross-imports** for API communication:
 
-1. **Shared Package**: Contains the database schema (Drizzle), validation schemas (Drizzle-Zod), and the ORPC contract that defines the API interface
-2. **Backend Package**: Implements the ORPC contract procedures with actual database operations
-3. **Frontend Package**: Uses the ORPC contract to make type-safe API calls without directly depending on the backend package
+1. **Backend Package**: Contains the database schema (Drizzle), validation schemas (Drizzle-Zod), and implements the ORPC router
+2. **Shared Package**: Imports model schemas from backend and exports the ORPC contract that defines the API interface  
+3. **Frontend Package**: Uses the ORPC contract from shared to make type-safe API calls without directly depending on the backend package
 
 This architecture ensures:
 - ✅ Frontend never imports from backend (no tight coupling)
 - ✅ Type safety across the entire stack
 - ✅ Contract serves as the single source of truth for the API
-- ✅ Frontend and backend can be developed independently
+- ✅ Backend and frontend can be developed independently
+- ✅ Drizzle schema and models are centralized in backend
+- ✅ Shared only imports types from backend for contract compilation
 
 ## Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 18+ and pnpm
 - Docker and Docker Compose
 
 # full setup
 ```
-npm install & cp packages/backend/.env.example packages/backend/.env & cp packages/frontend/.env.example packages/frontend/.env && npm run build --workspace=shared & npm run --workspace=backend db:generate && npm run dev
+pnpm install & cp packages/backend/.env.example packages/backend/.env & cp packages/frontend/.env.example packages/frontend/.env && pnpm run --filter shared build & pnpm run --filter backend db:generate && pnpm run dev
 ```
 
 ## Getting Started
@@ -50,7 +52,7 @@ npm install & cp packages/backend/.env.example packages/backend/.env & cp packag
 ### 1. Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. Set up environment variables
@@ -83,14 +85,14 @@ The `.env` file contains:
 ### 3. Build shared package
 
 ```bash
-npm run build --workspace=shared
+pnpm run --filter shared build
 ```
 
 ### 4. Generate database migration
 
 ```bash
 cd packages/backend
-npm run db:generate
+pnpm run db:generate
 cd ../..
 ```
 
@@ -99,7 +101,7 @@ cd ../..
 #### Option A: Start everything at once (Recommended)
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 This will:
@@ -114,22 +116,22 @@ If you prefer more control, start each service separately:
 
 **Terminal 1 - Database:**
 ```bash
-npm run db:up
+pnpm run db:up
 ```
 
 **Terminal 2 - Run migrations (once database is ready):**
 ```bash
-npm run db:migrate
+pnpm run db:migrate
 ```
 
 **Terminal 3 - Backend:**
 ```bash
-npm run dev:backend
+pnpm run dev:backend
 ```
 
 **Terminal 4 - Frontend:**
 ```bash
-npm run dev:frontend
+pnpm run dev:frontend
 ```
 
 ### 6. Open your browser
@@ -161,14 +163,14 @@ The backend exposes the following ORPC procedures:
 
 ## Available Scripts
 
-- `npm run dev` - Start full stack (database, backend, frontend)
-- `npm run dev:backend` - Start backend only
-- `npm run dev:frontend` - Start frontend only
-- `npm run db:up` - Start PostgreSQL
-- `npm run db:down` - Stop PostgreSQL
-- `npm run db:migrate` - Run database migrations
-- `npm run build` - Build all packages
-- `npm run clean` - Clean all node_modules and dist folders
+- `pnpm run dev` - Start full stack (database, backend, frontend)
+- `pnpm run dev:backend` - Start backend only
+- `pnpm run dev:frontend` - Start frontend only
+- `pnpm run db:up` - Start PostgreSQL
+- `pnpm run db:down` - Stop PostgreSQL
+- `pnpm run db:migrate` - Run database migrations
+- `pnpm run build` - Build all packages
+- `pnpm run clean` - Clean all node_modules and dist folders
 
 ## Environment Variables Reference
 
@@ -189,28 +191,28 @@ The backend exposes the following ORPC procedures:
 
 ### Database Migrations
 
-When you modify the database schema in `packages/shared/src/schema.ts`:
+When you modify the database schema in `packages/backend/src/drizzle/schema.ts`:
 
 1. Generate a new migration:
    ```bash
    cd packages/backend
-   npm run db:generate
+   pnpm run db:generate
    ```
 
 2. Apply the migration:
    ```bash
-   npm run db:migrate
+   pnpm run db:migrate
    ```
 
 ### Type Safety
 
-The application maintains end-to-end type safety through a contract-first approach:
+The application maintains end-to-end type safety through a contract-first approach with cross-imports:
 
-1. **Database Schema**: Defined in Drizzle (`shared/src/schema.ts`)
-2. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`shared/src/schemas.ts`)
-3. **API Contract**: ORPC contract defines input/output types (`shared/src/contract.ts`)
+1. **Database Schema**: Defined in Drizzle (`backend/src/drizzle/schema.ts`)
+2. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`backend/src/model/schemas.ts`)
+3. **API Contract**: ORPC contract imports model schemas from backend and defines input/output types (`shared/src/contract/contract.ts`)
 4. **Backend Implementation**: Implements the contract with type-safe handlers (`backend/src/router.ts`)
-5. **Frontend Client**: Uses the contract for type-safe API calls (`frontend/src/client.ts`)
+5. **Frontend Client**: Uses the contract from shared for type-safe API calls (`frontend/src/client.ts`)
 6. **Full Autocomplete**: Frontend gets complete type inference without importing backend code
 
 ## Troubleshooting
@@ -233,5 +235,5 @@ If port 3000 or 5173 is already in use:
 
 Ensure the shared package is built:
 ```bash
-npm run build --workspace=shared
+pnpm run --filter shared build
 ```
