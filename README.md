@@ -14,8 +14,8 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 ```
 .
 ├── packages/
-│   ├── shared/          # Shared schemas, types, and ORPC contract
-│   ├── backend/         # Node.js backend implementing the contract
+│   ├── backend/         # Database schema, models, and ORPC router implementation
+│   ├── shared/          # ORPC contract (imports models from backend)
 │   └── frontend/        # Vue 3 frontend using the contract
 ├── docker-compose.yml   # PostgreSQL database setup
 └── package.json         # Workspace configuration
@@ -23,17 +23,19 @@ A complete full-stack application prototype demonstrating end-to-end type safety
 
 ## Architecture
 
-This project uses a **contract-first** approach for API communication:
+This project uses a **contract-first** approach with **cross-imports** for API communication:
 
-1. **Shared Package**: Contains the database schema (Drizzle), validation schemas (Drizzle-Zod), and the ORPC contract that defines the API interface
-2. **Backend Package**: Implements the ORPC contract procedures with actual database operations
-3. **Frontend Package**: Uses the ORPC contract to make type-safe API calls without directly depending on the backend package
+1. **Backend Package**: Contains the database schema (Drizzle), validation schemas (Drizzle-Zod), and implements the ORPC router
+2. **Shared Package**: Imports model schemas from backend and exports the ORPC contract that defines the API interface  
+3. **Frontend Package**: Uses the ORPC contract from shared to make type-safe API calls without directly depending on the backend package
 
 This architecture ensures:
 - ✅ Frontend never imports from backend (no tight coupling)
 - ✅ Type safety across the entire stack
 - ✅ Contract serves as the single source of truth for the API
-- ✅ Frontend and backend can be developed independently
+- ✅ Backend and frontend can be developed independently
+- ✅ Drizzle schema and models are centralized in backend
+- ✅ Shared only imports types from backend for contract compilation
 
 ## Prerequisites
 
@@ -189,7 +191,7 @@ The backend exposes the following ORPC procedures:
 
 ### Database Migrations
 
-When you modify the database schema in `packages/shared/src/schema.ts`:
+When you modify the database schema in `packages/backend/src/drizzle/schema.ts`:
 
 1. Generate a new migration:
    ```bash
@@ -204,13 +206,13 @@ When you modify the database schema in `packages/shared/src/schema.ts`:
 
 ### Type Safety
 
-The application maintains end-to-end type safety through a contract-first approach:
+The application maintains end-to-end type safety through a contract-first approach with cross-imports:
 
-1. **Database Schema**: Defined in Drizzle (`shared/src/schema.ts`)
-2. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`shared/src/schemas.ts`)
-3. **API Contract**: ORPC contract defines input/output types (`shared/src/contract.ts`)
+1. **Database Schema**: Defined in Drizzle (`backend/src/drizzle/schema.ts`)
+2. **Validation Schemas**: Zod schemas generated from Drizzle schemas (`backend/src/model/schemas.ts`)
+3. **API Contract**: ORPC contract imports model schemas from backend and defines input/output types (`shared/src/contract/contract.ts`)
 4. **Backend Implementation**: Implements the contract with type-safe handlers (`backend/src/router.ts`)
-5. **Frontend Client**: Uses the contract for type-safe API calls (`frontend/src/client.ts`)
+5. **Frontend Client**: Uses the contract from shared for type-safe API calls (`frontend/src/client.ts`)
 6. **Full Autocomplete**: Frontend gets complete type inference without importing backend code
 
 ## Troubleshooting
