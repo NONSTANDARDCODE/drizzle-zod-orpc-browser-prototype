@@ -1,6 +1,6 @@
 import { oc } from '@orpc/contract';
 import { z } from 'zod';
-import { insertUserSchema, selectUserSchema } from 'backend/model';
+import { insertUserSchema, selectUserSchema } from '../schemas.js';
 
 // Create the ORPC contract
 export const contract = {

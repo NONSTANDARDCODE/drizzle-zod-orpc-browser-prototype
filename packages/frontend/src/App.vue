@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { client } from './client';
-import type { SelectUser } from 'shared';
+import { useForm, useField } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { insertUserSchema } from 'shared';
 
-const users = ref<SelectUser[]>([]);
-const name = ref('');
-const email = ref('');
+// Infer the User type from the client response
+type User = Awaited<ReturnType<typeof client.getUsers>>[number];
+
+const users = ref<User[]>([]);
 const loading = ref(false);
 const error = ref('');
+
+// Setup vee-validate with the schema from shared
+const { handleSubmit, resetForm, errors } = useForm({
+  validationSchema: toTypedSchema(insertUserSchema),
+});
+
+const { value: name } = useField<string>('name');
+const { value: email } = useField<string>('email');
 
 async function loadUsers() {
   try {
@@ -19,24 +30,15 @@ async function loadUsers() {
   }
 }
 
-async function createUser() {
-  if (!name.value || !email.value) {
-    error.value = 'Name and email are required';
-    return;
-  }
-
+const onSubmit = handleSubmit(async (values) => {
   try {
     loading.value = true;
     error.value = '';
     
-    await client.createUser({
-      name: name.value,
-      email: email.value,
-    });
+    await client.createUser(values);
 
     // Clear form
-    name.value = '';
-    email.value = '';
+    resetForm();
 
     // Reload users
     await loadUsers();
@@ -46,7 +48,7 @@ async function createUser() {
   } finally {
     loading.value = false;
   }
-}
+});
 
 onMounted(() => {
   loadUsers();
@@ -63,7 +65,7 @@ onMounted(() => {
     <main>
       <section class="create-user">
         <h2>Create User</h2>
-        <form @submit.prevent="createUser">
+        <form @submit="onSubmit">
           <div class="form-group">
             <label for="name">Name:</label>
             <input
@@ -71,8 +73,9 @@ onMounted(() => {
               v-model="name"
               type="text"
               placeholder="Enter name"
-              required
+              :class="{ 'input-error': errors.name }"
             />
+            <span v-if="errors.name" class="field-error">{{ errors.name }}</span>
           </div>
           
           <div class="form-group">
@@ -82,8 +85,9 @@ onMounted(() => {
               v-model="email"
               type="email"
               placeholder="Enter email"
-              required
+              :class="{ 'input-error': errors.email }"
             />
+            <span v-if="errors.email" class="field-error">{{ errors.email }}</span>
           </div>
 
           <button type="submit" :disabled="loading">
@@ -182,6 +186,17 @@ input {
 input:focus {
   outline: none;
   border-color: #3498db;
+}
+
+input.input-error {
+  border-color: #e74c3c;
+}
+
+.field-error {
+  display: block;
+  color: #e74c3c;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
 
 button {

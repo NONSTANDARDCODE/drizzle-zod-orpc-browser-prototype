@@ -1,5 +1,5 @@
 import { os } from '@orpc/server';
-import { insertUserSchema, selectUserSchema } from '@/model/schemas.js';
+import { insertUserSchema, selectUserSchema } from 'shared';
 import { users } from '@/drizzle/schema.js';
 import { z } from 'zod';
 import { db } from '@/db.js';

@@ -1,3 +1,3 @@
 export * from './contract/contract.js';
-// Re-export model types for consumers
-export type { InsertUser, SelectUser } from 'backend/model';
+// Re-export model schemas for consumers
+export { insertUserSchema, selectUserSchema } from './schemas.js';
