@@ -1,6 +1,11 @@
 import { oc } from '@orpc/contract';
 import { z } from 'zod';
-import { insertUserSchema, selectUserSchema } from 'backend/model';
+import { insertUserSchema } from 'backend/model';
+import { createSelectSchema } from 'drizzle-zod';
+import { users } from 'backend/drizzle';
+
+// Create select schema for output
+const selectUserSchema = createSelectSchema(users);
 
 // Create the ORPC contract
 export const contract = {
