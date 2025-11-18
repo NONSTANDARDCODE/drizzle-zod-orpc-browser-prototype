@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "dev": "pnpm --filter shared build:self && vite",
+    "build": "pnpm --filter shared build:self && vue-tsc && vite build",
+    "build:self": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

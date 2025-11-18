@@ -11,8 +11,9 @@
     }
   },
   "scripts": {
-    "build": "pnpm --filter backend build && tsc",
-    "dev": "tsc --watch"
+    "build": "pnpm --filter backend build:self && tsc",
+    "build:self": "pnpm --filter backend build:self && tsc",
+    "dev": "pnpm --filter backend build:self && tsc --watch"
   },
   "dependencies": {
     "@orpc/contract": "^1.11.2",
