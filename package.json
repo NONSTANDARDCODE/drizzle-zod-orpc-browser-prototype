@@ -6,8 +6,8 @@
     "dev": "pnpm run db:up && pnpm run db:migrate && concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
     "dev:backend": "pnpm --filter backend dev",
     "dev:frontend": "pnpm --filter frontend dev",
-    "db:up": "docker-compose up -d",
-    "db:down": "docker-compose down",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
     "db:migrate": "pnpm --filter backend db:migrate",
     "build": "pnpm -r build",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist"
