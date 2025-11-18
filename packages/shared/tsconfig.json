@@ -15,7 +15,9 @@
     "resolveJsonModule": true,
     "paths": {
       "@/contract/*": ["./src/contract/*"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "backend/model": ["../backend/dist/model/schemas"],
+      "backend/drizzle": ["../backend/dist/drizzle/schema"]
     }
   },
   "include": ["src/**/*"],
