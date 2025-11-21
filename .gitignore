@@ -6,3 +6,4 @@ dist
 coverage
 .turbo
 postgres_data
+*.tsbuildinfo

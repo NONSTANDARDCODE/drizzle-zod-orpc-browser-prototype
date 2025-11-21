@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+    "composite": true,
     "paths": {
       "@/drizzle/*": ["./src/drizzle/*"],
       "@/model/*": ["./src/model/*"],
