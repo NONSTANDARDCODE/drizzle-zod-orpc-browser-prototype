@@ -13,13 +13,15 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
+    "composite": true,
     "paths": {
       "@/contract/*": ["./src/contract/*"],
-      "@/*": ["./src/*"],
-      "backend/model": ["../backend/dist/model/schemas"],
-      "backend/drizzle": ["../backend/dist/drizzle/schema"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "references": [
+    { "path": "../backend" }
+  ]
 }
